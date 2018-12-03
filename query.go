@@ -10,7 +10,7 @@ type Zabbix struct {
 	URL      string
 	User     string
 	Password string
-	Auth     string
+	Token    string
 }
 
 type ZabbixResponse struct {
@@ -33,7 +33,6 @@ func (zabbix *Zabbix) Login() error {
 	data.Jsonrpc = "2.0"
 	data.Method = "user.login"
 	data.ID = 1
-	//data.Auth = ""
 	data.Params = map[string]interface{}{
 		"user":     zabbix.User,
 		"password": zabbix.Password,
@@ -55,7 +54,7 @@ func (zabbix *Zabbix) Login() error {
 		return err
 	}
 
-	zabbix.Auth = response.Result.(string)
+	zabbix.Token = response.Result.(string)
 
 	return nil
 }
