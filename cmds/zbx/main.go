@@ -14,5 +14,5 @@ func main() {
 	if err != nil {
 		return
 	}
-	fmt.Printf("%v", zabbix.Client.Auth)
+	fmt.Printf("%v", zabbix.Client.Token)
 }
