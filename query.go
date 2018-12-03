@@ -25,22 +25,27 @@ type ZabbixRequest struct {
 	Auth    string      `json:"auth,omitempty"`
 }
 
+func NewZabbixRequest(method string, params interface{}) *ZabbixRequest {
+	r := new(ZabbixRequest)
+	r.Jsonrpc = "2.0"
+	r.Method = method
+	r.Params = params
+	r.ID = 1
+	return r
+}
+
 var Client Zabbix
 
 func (zabbix *Zabbix) Login() error {
 	u := zabbix.URL + "/api_jsonrpc.php"
-	data := ZabbixRequest{}
-	data.Jsonrpc = "2.0"
-	data.Method = "user.login"
-	data.ID = 1
-	data.Params = map[string]interface{}{
+	params := map[string]interface{}{
 		"user":     zabbix.User,
 		"password": zabbix.Password,
 	}
+	data := NewZabbixRequest("user.login", params)
+	jsonBytes, _ := json.Marshal(&data)
 
-	jsonStr, _ := json.Marshal(&data)
-
-	req, _ := http.NewRequest("POST", u, bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest("POST", u, bytes.NewBuffer(jsonBytes))
 	req.Header.Set("Content-Type", "application/json-rpc")
 	client := new(http.Client)
 	res, err := client.Do(req)
