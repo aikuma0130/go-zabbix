@@ -64,7 +64,7 @@ func (zabbix *Zabbix) Login() error {
 	return nil
 }
 
-func (zabbix *Zabbix) Do(param interface{}) (ZabbixResponse, error) {
+func (zabbix *Zabbix) Do(method string, param interface{}) (ZabbixResponse, error) {
 	var response ZabbixResponse
 	return response, nil
 }
