@@ -37,6 +37,9 @@ func NewZabbixRequest(method string, params interface{}) *ZabbixRequest {
 var Client Zabbix
 
 func (zabbix *Zabbix) Do(request *ZabbixRequest) (*ZabbixResponse, error) {
+	if zabbix.Token != "" {
+		request.Auth = zabbix.Token
+	}
 	u := zabbix.URL + "/api_jsonrpc.php"
 	jsonBytes, _ := json.Marshal(request)
 	req, _ := http.NewRequest("POST", u, bytes.NewBuffer(jsonBytes))
