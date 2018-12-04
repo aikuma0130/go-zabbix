@@ -36,35 +36,40 @@ func NewZabbixRequest(method string, params interface{}) *ZabbixRequest {
 
 var Client Zabbix
 
-func (zabbix *Zabbix) Login() error {
+func (zabbix *Zabbix) Do(request *ZabbixRequest) (*ZabbixResponse, error) {
 	u := zabbix.URL + "/api_jsonrpc.php"
-	params := map[string]interface{}{
-		"user":     zabbix.User,
-		"password": zabbix.Password,
-	}
-	data := NewZabbixRequest("user.login", params)
-	jsonBytes, _ := json.Marshal(&data)
-
+	jsonBytes, _ := json.Marshal(request)
 	req, _ := http.NewRequest("POST", u, bytes.NewBuffer(jsonBytes))
 	req.Header.Set("Content-Type", "application/json-rpc")
 	client := new(http.Client)
 	res, err := client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer res.Body.Close()
 
 	var response ZabbixResponse
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
+func (zabbix *Zabbix) Login() error {
+	params := map[string]interface{}{
+		"user":     zabbix.User,
+		"password": zabbix.Password,
+	}
+	data := NewZabbixRequest("user.login", params)
+
+	var response *ZabbixResponse
+	response, err := zabbix.Do(data)
+	if err != nil {
 		return err
 	}
 
 	zabbix.Token = response.Result.(string)
 
 	return nil
-}
-
-func (zabbix *Zabbix) Do(method string, param interface{}) (ZabbixResponse, error) {
-	var response ZabbixResponse
-	return response, nil
 }
