@@ -76,3 +76,7 @@ func (zabbix *Zabbix) Login() error {
 
 	return nil
 }
+
+func (zabbix *Zabbix) Logout() error {
+	return nil
+}
