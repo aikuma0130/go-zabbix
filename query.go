@@ -64,10 +64,10 @@ func (zabbix *Zabbix) Login() error {
 		"user":     zabbix.User,
 		"password": zabbix.Password,
 	}
-	data := NewZabbixRequest("user.login", params)
+	req := NewZabbixRequest("user.login", params)
 
 	var response *ZabbixResponse
-	response, err := zabbix.Do(data)
+	response, err := zabbix.Do(req)
 	if err != nil {
 		return err
 	}
