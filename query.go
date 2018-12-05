@@ -3,7 +3,6 @@ package zabbix
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -81,6 +80,14 @@ func (zabbix *Zabbix) Login() error {
 	return nil
 }
 
+type errorLogout struct{}
+
+func (err errorLogout) Error() string {
+	return "Failed Logout"
+}
+
+var failedLogout errorLogout
+
 func (zabbix *Zabbix) Logout() error {
 	req := NewZabbixRequest("user.logout", nil)
 
@@ -89,7 +96,8 @@ func (zabbix *Zabbix) Logout() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s", response.Result)
-
+	if response.Result != true {
+		return failedLogout
+	}
 	return nil
 }

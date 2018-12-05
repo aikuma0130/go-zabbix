@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/aikuma0130/go-zabbix"
 )
 
@@ -14,6 +12,7 @@ func main() {
 	if err != nil {
 		return
 	}
+	defer zabbix.Client.Logout()
 
 	params := map[string]interface{}{
 		"output": "extend",
@@ -21,11 +20,13 @@ func main() {
 			"host": []string{"Template OS Linux", "Template OS Windows"}}}
 
 	req := zabbix.NewZabbixRequest("template.get", params)
-	var response *zabbix.ZabbixResponse
-	response, err = zabbix.Client.Do(req)
+	//var response *zabbix.ZabbixResponse
+	//response, err = zabbix.Client.Do(req)
+	_, err = zabbix.Client.Do(req)
 	if err != nil {
 		return
 	}
 
-	fmt.Printf("%v", response.Result)
+	return
+	//fmt.Printf("%v", response.Result)
 }
