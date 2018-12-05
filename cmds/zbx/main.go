@@ -14,5 +14,18 @@ func main() {
 	if err != nil {
 		return
 	}
-	fmt.Printf("%v", zabbix.Client.Token)
+
+	params := map[string]interface{}{
+		"output": "extend",
+		"filter": map[string]interface{}{
+			"host": []string{"Template OS Linux", "Template OS Windows"}}}
+
+	req := zabbix.NewZabbixRequest("template.get", params)
+	var response *zabbix.ZabbixResponse
+	response, err = zabbix.Client.Do(req)
+	if err != nil {
+		return
+	}
+
+	fmt.Printf("%v", response.Result)
 }
