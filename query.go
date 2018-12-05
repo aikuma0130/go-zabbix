@@ -3,6 +3,7 @@ package zabbix
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -26,6 +27,9 @@ type ZabbixRequest struct {
 }
 
 func NewZabbixRequest(method string, params interface{}) *ZabbixRequest {
+	if params == nil {
+		params = map[string]interface{}{}
+	}
 	r := new(ZabbixRequest)
 	r.Jsonrpc = "2.0"
 	r.Method = method
@@ -78,5 +82,14 @@ func (zabbix *Zabbix) Login() error {
 }
 
 func (zabbix *Zabbix) Logout() error {
+	req := NewZabbixRequest("user.logout", nil)
+
+	var response *ZabbixResponse
+	response, err := zabbix.Do(req)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", response.Result)
+
 	return nil
 }
